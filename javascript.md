@@ -160,3 +160,113 @@ function myInstanceOf(o, target) {
   return false
 }
 ```
+
+Question: What is the difference between for/of and for/in? And why people prefer for/of instead of for/in?
+
+Concept: Loop
+
+Reference: JavaScript: The Definitive Guide, 7th Edition
+
+Difference:
+
+- for/of: It works with iterable objects. So any types that implements the iterable interface can be used in for/of.
+- for/in: It will iterate the enumerable properties of an object.
+
+People prefer for/of because for/in will iterate the properties which are inherited from parents. It can be overcome by using `obj.hasOwnProperty(prop)`
+
+---
+
+Question: Can you make object `o` iterable?
+
+Concept: Loop
+
+Reference: JavaScript: The Definitive Guide, 7th Edition, [MDN Iteration Protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
+
+```js
+// Question
+const o = {
+  data: [1, 2, 3, 4, 5],
+}
+
+for (let x of o) {
+  console.log(x)
+}
+// 1
+// 2
+// 3
+// 4
+// 5
+```
+
+```js
+// Answer
+const o = {
+  data: [1, 2, 3, 4, 5],
+  position: 0,
+  next() {
+    if (this.position === this.data.length) {
+      this.position = 0
+      return {
+        done: true,
+      }
+    }
+
+    return {
+      value: this.data[this.position++],
+      done: false,
+    }
+  },
+  [Symbol.iterator]() {
+    return this
+  },
+}
+```
+
+```js
+// Better Answer
+const o = {
+  data: [1, 2, 3, 4, 5],
+  [Symbol.iterator]() {
+    return this.data[Symbol.iterator]()
+  },
+}
+```
+
+Question: Can you iterate through the iterable `stream` and get `Hi, I am Leo` in order?
+
+Concept: Loop
+
+Reference: JavaScript: The Definitive Guide, 7th Edition
+
+```js
+// Question
+async function iterateStream(stream) {
+  // your code
+}
+
+async function main() {
+  const stream = [
+    new Promise((resolve) => setTimeout(() => resolve('Hi,'), 3000)),
+    new Promise((resolve) => setTimeout(() => resolve("I'm"), 1000)),
+    new Promise((resolve) => setTimeout(() => resolve('Leo.'), 2000)),
+  ]
+
+  const result = await iterateStream(stream)
+  console.log(result)
+}
+
+main()
+```
+
+```js
+// Answer
+async function iterateStream(stream) {
+  let result = ''
+
+  for await (let chunk of stream) {
+    result += ` ${chunk}`
+  }
+
+  return result
+}
+```
