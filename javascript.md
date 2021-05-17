@@ -270,3 +270,31 @@ async function iterateStream(stream) {
   return result
 }
 ```
+
+Question: What's the difference between `const a = Object.create({})`, `const b = Object.create(null)` and `const c = {}`?
+And how to create an object equivalent to `const c = {}` with `Object.create()`?
+
+Concept: Object
+
+Reference: JavaScript: The Definitive Guide, 7th Edition
+
+- `a.__proto__.__proto__` is `Object.prototype`
+- `b` inherits no props or methods
+- `c.__proto__` is `Object.prototype`
+- `Object.create(Object.prototype)` is equivalent to `{}`
+
+---
+
+Question: In what situation will you use `Object.create()`?
+
+Concept: Object
+
+Reference: JavaScript: The Definitive Guide, 7th Edition
+
+Guard against unintended modification of an object by a library function.
+
+```js
+let o = { x: "don't change this value" }
+library.function(Object.create(o)) // Guard against accidental modifications
+library.function({ ...o }) // Not exact the same, but can achieve the same goal
+```
