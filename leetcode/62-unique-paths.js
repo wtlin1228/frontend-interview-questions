@@ -6,10 +6,10 @@
  * First idea:
  *
  * if m = 3 and n = 7, we need to find all combinations of 6 rights and 2 downs
- * C(7, 2) + C(7, 1) = 28
+ * C(7, 2) + C(7, 1) = 28 or 8!/(6!2!)
  *
  * if m = 4 and n = 7, we need to find all combinations of 6 rights and 3 downs
- * C(7, 3) + C(7, 2) * 2 + C(7, 1) = 84
+ * C(7, 3) + C(7, 2) * 2 + C(7, 1) = 84 or 9!/(6!3!)
  */
 
 /**
