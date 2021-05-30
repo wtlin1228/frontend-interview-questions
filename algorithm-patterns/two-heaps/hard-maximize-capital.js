@@ -37,6 +37,10 @@
 
 const { Heap } = require('../../algorithm/heap/heap')
 
+/**
+ * Time Complexity: O(N + K log N), N = total projects length and K = numberOfProjects
+ * Space Complexity: O(N), N = total projects length
+ */
 const find_maximum_capital = function (
   capital,
   profits,
@@ -46,16 +50,17 @@ const find_maximum_capital = function (
   const CPs = capital.map((c, index) => [c, profits[index]])
   const minCapitalHeap = new Heap(CPs, (child, parent) => child[0] >= parent[0])
   const maxProfitHeap = new Heap([], (child, parent) => child[1] <= parent[1])
-  minCapitalHeap.buildHeap()
+  minCapitalHeap.buildHeap() // O(N)
 
   let availableCapital = initialCapital
 
+  // O(K log N)
   for (let i = 0; i < numberOfProjects; i++) {
     while (
       minCapitalHeap.size() > 0 &&
       minCapitalHeap.peek()[0] <= availableCapital
     ) {
-      maxProfitHeap.push(minCapitalHeap.pop())
+      maxProfitHeap.push(minCapitalHeap.pop()) // O(log N)
     }
 
     if (maxProfitHeap.size() === 0) {
