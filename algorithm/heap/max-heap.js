@@ -115,11 +115,15 @@ class MaxHeap {
   }
 }
 
-const maxHeap = new MaxHeap([4, 1, 3, 2, 16, 9, 10, 14, 8, 7])
-maxHeap.buildMaxHeap()
-console.log(maxHeap.values)
-console.log(maxHeap.peek())
-maxHeap.add(100)
-console.log(maxHeap.values)
-maxHeap.extractMax()
-console.log(maxHeap.values)
+// const maxHeap = new MaxHeap([4, 1, 3, 2, 16, 9, 10, 14, 8, 7])
+// maxHeap.buildMaxHeap()
+// console.log(maxHeap.values)
+// console.log(maxHeap.peek())
+// maxHeap.add(100)
+// console.log(maxHeap.values)
+// maxHeap.extractMax()
+// console.log(maxHeap.values)
+
+module.exports = {
+  MaxHeap,
+}

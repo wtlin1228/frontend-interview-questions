@@ -1,11 +1,13 @@
 /**
  * Space Complexity: O(n)
  */
-class MinHeap {
+class Heap {
   values = []
+  sortFn = () => {}
 
-  constructor(unorderedArray) {
+  constructor(unorderedArray, sortFn) {
     this.values = unorderedArray
+    this.sortFn = sortFn
   }
 
   peek() {
@@ -15,7 +17,7 @@ class MinHeap {
   /**
    * Time Complexity: O(n)
    */
-  buildMinHeap() {
+  reBalanceHeap() {
     for (let i = Math.floor(this.values.length / 2); i >= 0; i--) {
       this.heapifyDown(i)
     }
@@ -24,26 +26,39 @@ class MinHeap {
   /**
    * Time Complexity: O(log n)
    */
-  extractMin() {
+  pop() {
     if (this.values.length < 1) {
-      throw new Error('try to extract value from empty min heap')
+      throw new Error('Heap is empty')
     }
 
-    const min = this.values[0]
+    const result = this.values[0]
     const end = this.values.pop()
 
     this.values[0] = end
     this.heapifyDown(0)
 
-    return min
+    return result
   }
 
   /**
    * Time Complexity: O(log n)
    */
-  add(value) {
+  push(value) {
     this.values.push(value)
     this.heapifyUp(this.values.length - 1)
+  }
+
+  /**
+   * Time Complexity: O(n)
+   */
+  remove(value) {
+    const i = this.values.findIndex((x) => x === value)
+    if (i !== -1) {
+      const end = this.values.pop()
+
+      this.values[i] = end
+      this.heapifyDown(i)
+    }
   }
 
   /**
@@ -57,17 +72,17 @@ class MinHeap {
     const leftChildIndex = this.left(i)
     const rightChildIndex = this.right(i)
 
-    let smallestIndex = i
-    if (this.values[leftChildIndex] < this.values[smallestIndex]) {
-      smallestIndex = leftChildIndex
+    let currentIndex = i
+    if (this.sortFn(this.values[currentIndex], this.values[leftChildIndex])) {
+      currentIndex = leftChildIndex
     }
-    if (this.values[rightChildIndex] < this.values[smallestIndex]) {
-      smallestIndex = rightChildIndex
+    if (this.sortFn(this.values[currentIndex], this.values[rightChildIndex])) {
+      currentIndex = rightChildIndex
     }
 
-    if (smallestIndex !== i) {
-      this.swap(smallestIndex, i)
-      this.heapifyDown(smallestIndex)
+    if (currentIndex !== i) {
+      this.swap(currentIndex, i)
+      this.heapifyDown(currentIndex)
     }
   }
 
@@ -79,7 +94,7 @@ class MinHeap {
     while (currentIndex !== 0) {
       const parentIndex = this.parent(currentIndex)
 
-      if (this.values[currentIndex] >= this.values[parentIndex]) {
+      if (this.sortFn(this.values[currentIndex], this.values[parentIndex])) {
         return
       }
 
@@ -115,15 +130,32 @@ class MinHeap {
   }
 }
 
-// const minHeap = new MinHeap([4, 1, 3, 2, 16, 9, 10, 14, 8, 7])
-// minHeap.buildMinHeap()
+// const minHeap = new Heap(
+//   [4, 1, 3, 2, 16, 9, 10, 14, 8, 7],
+//   (child, parent) => child >= parent
+// )
+// minHeap.reBalanceHeap()
 // console.log(minHeap.values)
 // console.log(minHeap.peek())
-// minHeap.add(0)
+// minHeap.push(0)
 // console.log(minHeap.values)
-// minHeap.extractMin()
+// minHeap.pop()
 // console.log(minHeap.values)
 
+// const maxHeap = new Heap(
+//   [4, 1, 3, 2, 16, 9, 10, 14, 8, 7],
+//   (child, parent) => child <= parent
+// )
+// maxHeap.reBalanceHeap()
+// console.log(maxHeap.values)
+// console.log(maxHeap.peek())
+// maxHeap.push(100)
+// console.log(maxHeap.values)
+// maxHeap.pop()
+// console.log(maxHeap.values)
+// maxHeap.remove(14)
+// console.log(maxHeap.values)
+
 module.exports = {
-  MinHeap,
+  Heap,
 }
