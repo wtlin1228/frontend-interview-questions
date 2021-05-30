@@ -21,25 +21,42 @@
  * 7. findMedian() -> output: 3.5
  */
 
+const { Heap } = require('../../algorithm/heap/heap')
+
+/**
+ * Space Complexity: O(N)
+ */
 class MedianOfAStream {
   constructor() {
-    this.leftHeap = []
-    this.rightHeap = []
+    this.maxHeap = new Heap([], (child, parent) => child <= parent)
+    this.minHeap = new Heap([], (child, parent) => child >= parent)
   }
 
+  /**
+   * Time Complexity: O(log n)
+   */
   insert_num(num) {
-    // TODO: Write your code here
-    if (this.leftHeap.length > this.rightHeap.length) {
-      if (this.leftHeap[this.leftHeap.length - 1] > num) {
-        this.rightHeap.push()
-      }
+    if (this.maxHeap.size() === 0 || this.maxHeap.peek() >= num) {
+      this.maxHeap.push(num)
+    } else {
+      this.minHeap.push(num)
     }
-    return -1
+
+    if (this.maxHeap.size() > this.minHeap.size() + 1) {
+      this.minHeap.push(this.maxHeap.pop())
+    } else if (this.maxHeap.size() < this.minHeap.size()) {
+      this.maxHeap.push(this.minHeap.pop())
+    }
   }
 
-  find_median(self) {
-    // TODO: Write your code here
-    return 0.0
+  /**
+   * Time Complexity: O(1)
+   */
+  find_median() {
+    if (this.maxHeap.size() > this.minHeap.size()) {
+      return this.maxHeap.peek()
+    }
+    return (this.minHeap.peek() + this.maxHeap.peek()) / 2
   }
 }
 

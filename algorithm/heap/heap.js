@@ -17,7 +17,11 @@ class Heap {
   /**
    * Time Complexity: O(n)
    */
-  reBalanceHeap() {
+  buildHeap() {
+    if (this.size() === 0) {
+      return
+    }
+
     for (let i = Math.floor(this.values.length / 2); i >= 0; i--) {
       this.heapifyDown(i)
     }
@@ -29,6 +33,10 @@ class Heap {
   pop() {
     if (this.values.length < 1) {
       throw new Error('Heap is empty')
+    }
+
+    if (this.size() === 1) {
+      return this.values.pop()
     }
 
     const result = this.values[0]
@@ -51,14 +59,21 @@ class Heap {
   /**
    * Time Complexity: O(n)
    */
-  remove(value) {
+  delete(value) {
     const i = this.values.findIndex((x) => x === value)
-    if (i !== -1) {
-      const end = this.values.pop()
 
-      this.values[i] = end
-      this.heapifyDown(i)
+    if (i === -1) {
+      return
     }
+
+    if (i === 0 && this.size() === 1) {
+      this.values.pop()
+      return
+    }
+
+    const end = this.values.pop()
+    this.values[i] = end
+    this.heapifyDown(i)
   }
 
   /**
@@ -73,10 +88,16 @@ class Heap {
     const rightChildIndex = this.right(i)
 
     let currentIndex = i
-    if (this.sortFn(this.values[currentIndex], this.values[leftChildIndex])) {
+    if (
+      this.values[leftChildIndex] &&
+      this.sortFn(this.values[currentIndex], this.values[leftChildIndex])
+    ) {
       currentIndex = leftChildIndex
     }
-    if (this.sortFn(this.values[currentIndex], this.values[rightChildIndex])) {
+    if (
+      this.values[rightChildIndex] &&
+      this.sortFn(this.values[currentIndex], this.values[rightChildIndex])
+    ) {
       currentIndex = rightChildIndex
     }
 
@@ -125,7 +146,7 @@ class Heap {
     ;[this.values[i], this.values[j]] = [this.values[j], this.values[i]]
   }
 
-  heapSize() {
+  size() {
     return this.values.length
   }
 }
@@ -134,7 +155,7 @@ class Heap {
 //   [4, 1, 3, 2, 16, 9, 10, 14, 8, 7],
 //   (child, parent) => child >= parent
 // )
-// minHeap.reBalanceHeap()
+// minHeap.buildHeap()
 // console.log(minHeap.values)
 // console.log(minHeap.peek())
 // minHeap.push(0)
@@ -146,14 +167,14 @@ class Heap {
 //   [4, 1, 3, 2, 16, 9, 10, 14, 8, 7],
 //   (child, parent) => child <= parent
 // )
-// maxHeap.reBalanceHeap()
+// maxHeap.buildHeap()
 // console.log(maxHeap.values)
 // console.log(maxHeap.peek())
 // maxHeap.push(100)
 // console.log(maxHeap.values)
 // maxHeap.pop()
 // console.log(maxHeap.values)
-// maxHeap.remove(14)
+// maxHeap.delete(14)
 // console.log(maxHeap.values)
 
 module.exports = {
