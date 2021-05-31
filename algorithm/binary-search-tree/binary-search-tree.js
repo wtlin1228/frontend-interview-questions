@@ -87,6 +87,57 @@ class BSTNode {
   }
 
   /**
+   * Finds and returns the node with key k from the subtree rooted at this node.
+   * @param {number} k The key of the node we want to find.
+   * @returns {BSTNode} The node with key k.
+   */
+  find(k) {
+    if (k === this.key) {
+      return this
+    }
+
+    if (k < this.key) {
+      if (this.left === null) {
+        return null
+      }
+      return this.left.find(k)
+    }
+
+    if (k > this.key) {
+      if (this.right === null) {
+        return null
+      }
+      return this.right.find(k)
+    }
+  }
+
+  /**
+   * Finds the node with the minimum key in the subtree rooted at this node.
+   * @returns The node with the minimum key.
+   */
+  findMin() {
+    let current = this
+    while (current.left !== null) {
+      current = current.left
+    }
+    return current
+  }
+
+  /**
+   * Returns the node with the next larger key (the successor) in the BST.
+   */
+  nextLarger() {
+    if (this.right !== null) {
+      return this.right.findMin()
+    }
+    let current = this
+    while (current.parent !== null && current === current.parent.right) {
+      current = current.parent
+    }
+    return current.parent
+  }
+
+  /**
    * Inserts a node into the subtree rooted at this node.
    * @param {BSTNode} node The node to be inserted.
    * @returns
@@ -111,6 +162,31 @@ class BSTNode {
       }
     }
   }
+
+  /**
+   * Deletes and returns this node from the BST.
+   * @returns the node deleted.
+   */
+  delete() {
+    if (this.left === null || this.right === null) {
+      if (this === this.parent.left) {
+        this.parent.left = this.left || this.right
+        if (this.parent.left !== null) {
+          this.parent.left.parent = this.parent
+        }
+      } else {
+        this.parent.right = this.left || this.right
+        if (this.parent.right !== null) {
+          this.parent.right.parent = this.parent
+        }
+      }
+      return this
+    } else {
+      const s = this.nextLarger()
+      ;[this.key, s.key] = [s.key, this.key]
+      return s.delete()
+    }
+  }
 }
 
 class BST {
@@ -127,6 +203,33 @@ class BST {
   }
 
   /**
+   * Finds and returns the node with key k from the subtree rooted at this node.
+   * @param {number} k The key of the node we want to find.
+   * @returns The node with key k or None if the tree is empty.
+   */
+  find(k) {
+    return this.root && this.root.find(k)
+  }
+
+  /**
+   * @returns The minimum node of this BST.
+   */
+  findMin() {
+    return this.root && this.root.findMin()
+  }
+
+  /**
+   * Returns the node that contains the next larger (the successor) key in the
+   * BST in relation to the node with key k.
+   * @param {number} k The key of the node of which the successor is to be found.
+   * @returns The successor node.
+   */
+  nextLarger(k) {
+    const node = this.find(k)
+    return node && node.nextLarger()
+  }
+
+  /**
    * Inserts a node with key k into the subtree rooted at this node.
    * @param {number} k The key of the node to be inserted.
    * @returns The node inserted.
@@ -140,6 +243,36 @@ class BST {
     }
     return node
   }
+
+  /**
+   * Deletes and returns a node with key k if it exists from the BST.
+   * @param {number} k The key of the node that we want to delete.
+   * @returns The deleted node with key k.
+   */
+  delete(k) {
+    const node = this.find(k)
+
+    if (!node) {
+      return null
+    }
+
+    if (node !== this.root) {
+      return node.delete()
+    } else {
+      const pseudoRoot = new this.klass(null, 0)
+      pseudoRoot.left = this.root
+      this.root.parent = pseudoRoot
+
+      const deleted = this.root.delete()
+
+      this.root = pseudoRoot.left
+      if (this.root !== null) {
+        this.root.parent = null
+      }
+
+      return deleted
+    }
+  }
 }
 
 const tree = new BST()
@@ -150,5 +283,25 @@ tree.insert(3)
 tree.insert(7)
 tree.insert(13)
 tree.insert(17)
+console.log(tree.toString())
 
+tree.delete(15)
+console.log(tree.toString())
+
+tree.delete(10)
+console.log(tree.toString())
+
+tree.delete(13)
+console.log(tree.toString())
+
+tree.delete(17)
+console.log(tree.toString())
+
+tree.delete(3)
+console.log(tree.toString())
+
+tree.delete(5)
+console.log(tree.toString())
+
+tree.delete(7)
 console.log(tree.toString())
