@@ -50,7 +50,7 @@ function reverse_every_k_elements(head, k) {
     count += 1
 
     // record the edge nodes and link together
-    if (count === 3) {
+    if (count === k) {
       count = 0
 
       if (!isFirstRound) {
