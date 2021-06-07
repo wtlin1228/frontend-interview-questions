@@ -149,6 +149,10 @@ class Heap {
   size() {
     return this.values.length
   }
+
+  toArray() {
+    return this.values
+  }
 }
 
 // const minHeap = new Heap(
