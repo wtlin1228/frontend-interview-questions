@@ -26,6 +26,7 @@ const find_smallest_range = function (lists) {
     matrix.map((list) => ({ list, pointer: 0 })),
     (child, parent) => child.list[child.pointer] >= parent.list[parent.pointer]
   )
+
   return [-1, -1]
 }
 

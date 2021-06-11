@@ -24,6 +24,10 @@ function search_triplets(arr) {
   arr.sort((a, b) => a - b)
 
   for (let i = 0; i < arr.length; i++) {
+    if (i > 0 && arr[i] === arr[i - 1]) {
+      // skip same element to avoid duplicate triplets
+      continue
+    }
     search_pair(arr, arr[i] * -1, i + 1, triplets)
   }
 
@@ -62,3 +66,4 @@ function search_pair(arr, targetSum, left, triplets) {
 
 console.log(search_triplets([-3, 0, 1, 2, -1, 1, -2]))
 console.log(search_triplets([-5, 2, -1, -2, 3]))
+console.log(search_triplets([-2, 0, 1, 1, 2]))
