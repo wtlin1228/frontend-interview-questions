@@ -31,6 +31,10 @@
  * Number of edits is 2
  */
 
+/**
+ * Time Complexity: O(n), n = s1 length
+ * Space Complexity: O(1)
+ */
 function isEditDistanceOne(s1, s2) {
   if (s1 === s2) {
     return false
