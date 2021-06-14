@@ -37,8 +37,8 @@
  * @return {number[][]}
  */
 var permute = function (nums) {
-  if (nums.length < 2) {
-    return [...nums]
+  if (nums.length === 0) {
+    return []
   }
 
   const result = [[nums[0]]]
