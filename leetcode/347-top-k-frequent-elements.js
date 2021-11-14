@@ -26,6 +26,38 @@
 const { Heap } = require('../algorithm/heap/heap')
 
 /**
+ * Use Buckets to solve the problem.
+ * Time Complexity: O(n), where n = nums.length
+ * Space Complexity: O(n), where n = nums.length
+ *
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number[]}
+ */
+var topKFrequentWithBuckets = function (nums, k) {
+  // O(n) for building frequency map
+  const frequencyMap = {}
+  nums.forEach((num) => {
+    if (frequencyMap[num]) {
+      frequencyMap[num] += 1
+    } else {
+      frequencyMap[num] = 1
+    }
+  })
+
+  const buckets = []
+  Object.entries(frequencyMap).map(([num, frequency]) => {
+    if (buckets[frequency]) {
+      buckets[frequency].push(num)
+    } else {
+      buckets[frequency] = [num]
+    }
+  })
+
+  return buckets.flat().reverse().slice(0, k)
+}
+
+/**
  * Use Heap to solve the problem.
  * Time Complexity: O(n log(n)) in worst case. Where n = nums.length, k = nums.length and all numbers are distinct.
  * Space Complexity: O(n) in worst case. Where n = nums.length.
@@ -34,8 +66,8 @@ const { Heap } = require('../algorithm/heap/heap')
  * @param {number} k
  * @return {number[]}
  */
-var topKFrequent = function (nums, k) {
-  // O(n) for building frequency map cost
+var topKFrequentWithHeap = function (nums, k) {
+  // O(n) for building frequency map
   const frequencyMap = {}
   nums.forEach((num) => {
     if (frequencyMap[num]) {
@@ -63,4 +95,5 @@ var topKFrequent = function (nums, k) {
   return result.map((entry) => entry[0])
 }
 
-console.log(topKFrequent([2, 3, 4, 1, 4, 0, 4, -1, -2, -1], 2))
+// console.log(topKFrequentWithHeap([2, 3, 4, 1, 4, 0, 4, -1, -2, -1], 2))
+console.log(topKFrequentWithBuckets([2, 3, 4, 1, 4, 0, 4, -1, -2, -1], 2))
