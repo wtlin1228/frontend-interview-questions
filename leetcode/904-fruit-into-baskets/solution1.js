@@ -45,6 +45,7 @@
  */
 
 // My first idea is it's asking the longest sub-string contains at most k different elements
+// The solution below can only solve 2 buckets. Not for arbitrary buckets.
 
 function generateEmptyBucket() {
   return {
