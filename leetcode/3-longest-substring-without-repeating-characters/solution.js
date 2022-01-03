@@ -30,6 +30,7 @@
  */
 
 /**
+ * Use sliding window pattern.
  * Time Complexity: O(n), n = s.length
  * Space Complexity: O(n), n = s.length
  * @param {string} s
