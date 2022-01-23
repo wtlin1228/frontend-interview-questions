@@ -47,63 +47,71 @@
  * @return {void} Do not return anything, modify nums in-place instead.
  */
 var nextPermutation = function (nums) {
-  const n = nums.length
-
-  if (n === 1) {
-    // console.log(nums)
-    return
+  const swapByIndex = (idx1, idx2) => {
+    ;[nums[idx1], nums[idx2]] = [nums[idx2], nums[idx1]]
   }
 
-  if (nums[n - 1] > nums[n - 2]) {
-    swap(nums, n - 1, n - 2)
-    // console.log(nums)
-    return
+  const reverseToEndFromIdx = (idx) => {
+    let left = idx
+    let right = length - 1
+    while (left < right) {
+      swapByIndex(left, right)
+      left += 1
+      right -= 1
+    }
   }
 
-  // 1. find the pivot from right to left
-  let pivotIdx = 0
-  for (let i = n - 2; i > 0; i--) {
-    if (nums[i - 1] < nums[i] && nums[i] >= nums[i + 1]) {
+  const length = nums.length
+
+  // if nums[n-1] < nums[n] -> swap them, then done!
+  // ex: 1234 -> 1243
+  if (nums[length - 2] < nums[length - 1]) {
+    swapByIndex(length - 2, length - 1)
+    return nums
+  }
+
+  // find the first turn
+  let pivotIdx
+  for (let i = length - 2; i > 0; i--) {
+    if (nums[i - 1] < nums[i]) {
       pivotIdx = i
       break
     }
   }
 
-  // console.log(`find pivot nums[${pivotIdx}]: ${nums[pivotIdx]}`)
-
-  // nums is descending
-  if (pivotIdx === 0) {
-    for (let i = 0; i < n / 2; i++) {
-      swap(nums, i, n - 1 - i)
+  // no pivot found means that nums is the biggest number
+  // ex: 3210 -> 1023
+  if (!pivotIdx) {
+    // ex: 4321 -> 1234
+    reverseToEndFromIdx(0)
+    if (nums[0] !== 0) {
+      return nums
     }
-    // console.log(nums)
-    return
+
+    // ex: 3210 -> 0123 -> 1023
+    for (let i = 0; i < length; i++) {
+      if (nums[i] !== '0') {
+        swapByIndex(0, i)
+      }
+    }
+    return nums
   }
 
-  // 2. find the one just larger then pivot from [pivotIdx, n - 1]
-  const pivotLeftValue = nums[pivotIdx - 1]
-  let justLargerIdx = pivotIdx
-  for (let i = pivotIdx; i < n; i++) {
-    if (nums[i] > pivotLeftValue && nums[i] <= nums[justLargerIdx]) {
-      justLargerIdx = i
+  // swap the smallest number that is greater than nums[pivot - 1]
+  // in the range of [pivotIdx, length - 1]
+  // ex: ...698765 -> ...798665
+  //        ^  ^
+  for (let i = length - 1; i >= pivotIdx; i--) {
+    if (nums[i] > nums[pivotIdx - 1]) {
+      swapByIndex(i, pivotIdx - 1)
+      break
     }
   }
 
-  // console.log(`find just larger nums[${justLargerIdx}]: ${nums[justLargerIdx]}`)
-
-  // 3. swap nums[pivotIdx - 1] and nums[justLargerIdx]
-  swap(nums, pivotIdx - 1, justLargerIdx)
-  // console.log(nums)
-
-  // 4. sort nums from [pivotIdx, n - 1]
-  for (let i = 0; i < (n - 1 - pivotIdx) / 2; i++) {
-    swap(nums, pivotIdx + i, n - 1 - i)
-  }
-  // console.log(nums)
-}
-
-function swap(nums, i, j) {
-  ;[nums[i], nums[j]] = [nums[j], nums[i]]
+  // reverse [pivotIdx, length - 1]
+  // ex: ...798665 -> ...756689
+  reverseToEndFromIdx(pivotIdx)
+  return nums
 }
 
 // console.log(nextPermutation([1, 2, 3]))
