@@ -2,9 +2,6 @@
  * Space Complexity: O(n)
  */
 class Heap {
-  values = []
-  sortFn = () => {}
-
   constructor(unorderedArray, sortFn) {
     this.values = unorderedArray
     this.sortFn = sortFn
