@@ -199,3 +199,66 @@ var diameterOfBinaryTree = function (root) {
   return diameter
 }
 ```
+
+## build binary expression tree from infix expression
+
+https://leetcode.com/problems/build-binary-expression-tree-from-infix-expression/
+
+`3*4-2*5` -> `[-,*,*,3,4,2,5]`
+
+`"2-3/(5*2)+1"` -> `[+,-,1,2,/,null,null,null,null,3,*,null,null,5,2]`
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function Node(val, left, right) {
+ *     this.val = (val===undefined ? " " : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+
+/**
+ * @param {string} s
+ * @return {Node}
+ */
+var expTree = function (s) {
+  const queue = new Queue(s.split(''))
+  return parseExpression(queue)
+}
+
+// term | { term [+, -] term }
+function parseExpression(tokens) {
+  let lhs = parseTerm(tokens)
+  while (tokens.size() > 0 && ['+', '-'].includes(tokens.front())) {
+    const op = tokens.dequeue()
+    const rhs = parseTerm(tokens)
+    lhs = new Node(op, lhs, rhs)
+  }
+  return lhs
+}
+
+// factor | { factor [*, /] factor }
+function parseTerm(tokens) {
+  let lhs = parseFactor(tokens)
+  while (tokens.size() > 0 && ['*', '/'].includes(tokens.front())) {
+    const op = tokens.dequeue()
+    const rhs = parseFactor(tokens)
+    lhs = new Node(op, lhs, rhs)
+  }
+  return lhs
+}
+
+// digit | { ( expression ) }
+function parseFactor(tokens) {
+  if (tokens.front() === '(') {
+    tokens.dequeue() // consume '('
+    const node = parseExpression(tokens)
+    tokens.dequeue() // consume ')'
+    return node
+  }
+
+  const token = tokens.dequeue()
+  return new Node(token)
+}
+```
