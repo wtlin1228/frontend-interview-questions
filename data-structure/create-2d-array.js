@@ -1,3 +1,5 @@
-const create2DArray = (rowCount, columnCount, initialValue) => {
-  return Array(rowCount).fill(Array(columnCount).fill(initialValue))
+const create2DArray = (rowCount, columnCount, generateInitialValue) => {
+  return Array(rowCount)
+    .fill()
+    .map(() => Array(columnCount).fill().map(generateInitialValue))
 }
