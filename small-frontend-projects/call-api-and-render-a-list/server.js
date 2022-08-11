@@ -2576,19 +2576,21 @@ const dreams151 = [
 ]
 
 app.get('/pokedex', (req, res) => {
-  const {
-    query: { limit, offset },
+  let {
+    query: { limit, cursor },
   } = req
 
-  const next =
-    offset + limit < dreams151.length
-      ? `/pokedex?limit=${limit}&offset=${offset + limit}`
-      : null
+  limit = Number(limit)
+  cursor = Number(cursor)
+
+  const previousCursor = cursor - limit >= 0 ? cursor - limit : null
+  const nextCursor = cursor + limit < dreams151.length ? cursor + limit : null
 
   res.send({
     data: {
-      next,
-      pokemons: dreams151.slice(offset, offset + limit),
+      previousCursor,
+      nextCursor,
+      pokemons: dreams151.slice(cursor, cursor + limit),
     },
   })
 })
