@@ -45,3 +45,58 @@ StockSpanner.prototype.push = function (price, result) {
  * var param_1 = obj.next(price)
  */
 ```
+
+## min stack
+
+Keep track of the min val of the stack.
+
+```js
+var MinStack = function () {
+  // element: { val: number, min: number }
+  this.data = []
+}
+
+/**
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function (val) {
+  this.data.push({
+    val,
+    min: Math.min(this.getMin(), val),
+  })
+}
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function () {
+  return this.data.pop().val
+}
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function () {
+  return this.data[this.data.length - 1].val
+}
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function () {
+  if (this.data.length === 0) {
+    return Infinity
+  }
+  return this.data[this.data.length - 1].min
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * var obj = new MinStack()
+ * obj.push(val)
+ * obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.getMin()
+ */
+```
