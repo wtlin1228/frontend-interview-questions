@@ -54,3 +54,52 @@ var isHappy = function (n) {
   return true
 }
 ```
+
+## Maximum Twin Sum of a Linked List
+
+https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/
+
+1. reverse the right part
+2. traverse through the left part and right part
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {number}
+ */
+var pairSum = function (head) {
+  let fast = head
+  let slow = head
+  while (fast.next && fast.next.next) {
+    fast = fast.next.next
+    slow = slow.next
+  }
+
+  let prev = null
+  slow = slow.next
+  while (slow !== null) {
+    const next = slow.next
+    slow.next = prev
+    prev = slow
+    slow = next
+  }
+
+  let res = 0
+  let left = head
+  let right = prev
+  while (right !== null) {
+    res = Math.max(res, left.val + right.val)
+    left = left.next
+    right = right.next
+  }
+
+  return res
+}
+```
