@@ -98,3 +98,44 @@ const getNextPosition = (currentPosition, grid) => {
   return [false, { row: currentPosition.row + 1, col: currentPosition.col - 1 }]
 }
 ```
+
+## Maximum Length of Subarray With Positive Product
+
+https://leetcode.com/problems/maximum-length-of-subarray-with-positive-product/
+
+|          | -1  | 1   | 2   | 3   | -2  | 4   | 5   | -3  |
+| -------- | --- | --- | --- | --- | --- | --- | --- | --- |
+| positive | 0   | 1   | 2   | 3   | 5   | 6   | 7   | 7   |
+| negative | 1   | 2   | 3   | 4   | 4   | 5   | 6   | 8   |
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var getMaxLen = function (nums) {
+  let res = 0
+  let pos = 0
+  let neg = 0
+  for (let i = 0; i < nums.length; i++) {
+    const n = nums[i]
+
+    if (n === 0) {
+      // reset
+      pos = 0
+      neg = 0
+    } else if (n > 0) {
+      pos += 1
+      neg = neg === 0 ? 0 : neg + 1
+    } else {
+      const temp = neg
+      neg = pos + 1
+      pos = temp === 0 ? 0 : temp + 1
+    }
+
+    res = Math.max(res, pos)
+  }
+
+  return res
+}
+```
