@@ -1,0 +1,15 @@
+{
+  "name": "auto-suggest-mail-chip",
+  "version": "1.0.0",
+  "description": "",
+  "source": "./src/index.html",
+  "scripts": {
+    "start": "parcel"
+  },
+  "keywords": [],
+  "author": "Wei-Tang Lin <wtlin1228@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "2.7.0"
+  }
+}

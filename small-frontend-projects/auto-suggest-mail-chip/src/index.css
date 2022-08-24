@@ -1,0 +1,132 @@
+#receiver {
+  display: flex;
+  max-width: 500px;
+  border: 2px solid gold;
+  padding: 6px;
+}
+
+#receiver label {
+  margin-right: 6px;
+}
+
+#receiver #input-area {
+  width: 100%;
+}
+
+#input-area {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#input-area input {
+  border: none;
+  max-width: 100%;
+  flex-grow: 1;
+  line-height: 18px;
+  font-size: 16px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.mr-5 {
+  margin-right: 5px;
+}
+
+.open-suggestion {
+  box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);
+  height: auto;
+  padding: 5px;
+}
+
+.hide-suggestion {
+  height: 0;
+}
+
+#suggestion-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  overflow-y: scroll;
+  max-height: 450px;
+  min-width: 200px;
+  background-color: white;
+}
+
+.suggestion-row {
+  box-sizing: border-box;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  color: black;
+}
+
+.suggestion-row--active {
+  background-color: #6494ed;
+  color: white;
+}
+
+.suggestion-row__avatar {
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: bisque;
+  margin-right: 14px;
+}
+
+.suggestion-row:hover {
+  background-color: #6494eddf;
+  color: white;
+}
+
+.suggestion-row--active .suggestion-row__avatar,
+.suggestion-row:hover .suggestion-row__avatar {
+  color: black;
+}
+
+.suggestion-row__pokemon-name {
+  margin: 0;
+}
+
+.suggestion-row__pokemon-number {
+  margin: 0;
+}
+
+#chips {
+  display: inline;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: gold;
+  padding: 4px 8px;
+  border-radius: 20px;
+  margin-right: 4px;
+  margin-bottom: 3px;
+}
+
+.chip__avatar {
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: darkorange;
+  margin-right: 6px;
+}
+
+.chip__delete-button {
+  margin-left: 6px;
+  cursor: pointer;
+  background-color: dimgray;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+}
