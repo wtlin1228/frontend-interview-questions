@@ -139,3 +139,53 @@ var getMaxLen = function (nums) {
   return res
 }
 ```
+
+## Word Break
+
+https://leetcode.com/problems/word-break/
+
+```js
+// HashTable provides us O(1) search
+const buildWordTable = (wordDict) =>
+  wordDict.reduce((acc, curr) => {
+    acc[curr] = true
+    return acc
+  }, {})
+
+/**
+ * @param {string} s
+ * @param {string[]} wordDict
+ * @return {boolean}
+ */
+var wordBreak = function (s, wordDict) {
+  const wordTable = buildWordTable(wordDict)
+  const dp = Array(s.length + 1).fill(false)
+  dp[0] = true
+
+  for (let i = 1; i <= s.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (dp[j] && wordTable[s.substring(j, i)] === true) {
+        dp[i] = true
+        break
+      }
+    }
+  }
+
+  return dp[s.length]
+}
+
+// dp[i] stands for whether s.substring(0, i) is word-breakable
+// for example: 'leetcode', ['leet', 'code']
+// dp[0] = true
+// dp[1] = dp[0] && wordTable[s.substring(0, 1)] = true && false = false
+// dp[2] = (
+//           dp[0] && wordTable[s.substring(0, 2)]
+//           || dp[1] && wordTable[s.substring(1, 2)]
+// ) = false
+// dp[3] = (
+//           dp[0] && wordTable[s.substring(0, 3)]
+//           || dp[1] && wordTable[s.substring(1, 3)]
+//           || dp[2] && wordTable[s.substring(2, 3)]
+// ) = false
+//
+```

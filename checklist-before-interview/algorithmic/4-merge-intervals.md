@@ -240,3 +240,104 @@ var employeeFreeTime = function (schedule) {
   return freeTimes
 }
 ```
+
+## broadcasting company
+
+I want to start a broadcasting company. I will provide a schedule with channels and shows, this will include things such as program name,
+start time, end time, and quality (SD/HD/4K.etc). What I'm wanting from you is to create a way that based on this schedule I can understand
+What my peak bandwidth requirement is to broadcast my proposed schedule.
+
+Constraint:
+
+- I will only be able to purchase bandwidth once a year, so I will need
+  plan my schedule and get a peak requirement for the entire schedule presented. This will contain multiple channels and ontent changes in
+  quality throughout the year.
+
+Required Outputs:
+
+1. Maximum total bandwidth over the schedule
+2. Stretch, average consumption based on schedule.
+
+Quality Type Bandwidth
+Standard Def (SD) -> 1 (1500bit)
+High Def (HD) -> 5 (6000bit)
+Ultra High Def (4K) - > 12 (21000bit)
+
+Example TV Guide:
+Channel 1 = 12p - 4p -> SD, 4p - 5p -> HD, 6p - 9p -> 4K
+Channel 2 = 10a - 1p -> HD, 1:30p - 5p -> SD, 8p - 12p - 4K
+
+10a - 12p (1 HD) = 5
+12p - 1p (1 HD, 1 SD) = 6
+1p - 1:30p (1 SD) = 1
+
+```js
+// Use a minHeap to track the shows.
+// The sorting algo depends on the show's end time.
+// Which means that the most early ending show will be in the top of our heap.
+//
+// Time complexity for push() and pop() from minHeapForPlayingShows: O(channels.length)
+//
+const minHeapForPlayingShows = new Heap(
+  [],
+  (child, parent) => child.endTime >= parent.endTime
+)
+
+// Track the maximum bandwidth we need in the variable.
+// Update maxBandwidth whenever we are using more bandwidth.
+let maxBandwidth = 0
+let currentBandwidth = 0
+
+// To find the show which has the earliest start time.
+// We can use another minHeap and only put the earliest shows of each channel into it.
+// Whenever we pop one show from this minHeap, we put the next show of the same channel
+// into the heap until there is no show left in that channel.
+//
+// Time complexity for push() and pop() from minHeapForShowsToPlay: O(channels.length)
+//
+const minHeapForShowsToPlay = new Heap(
+  [],
+  (child, parent) => child.show.startTime >= parent.show.startTime
+)
+for (let i = 0; i < channels.length; i++) {
+  const firstShow = channels[i][0]
+  minHeapForShowsToPlay.push({
+    channelIdx: i,
+    showIdx: 0,
+    show: firstShow,
+    bandwidth: getBandwidthOfShow(firstShow),
+  })
+}
+
+// Start popping shows from minHeapForShowsToPlay and push it into minHeapForPlayingShows.
+//
+// Since each show will be push and pop form minHeapForShowsToPlay and minHeapForPlayingShows
+// only once, the time complexity is O(n * c), where n = shows count and c = channels count.
+//
+while (minHeapForShowsToPlay.size() > 0) {
+  const { channelIdx, showIdx, show } = minHeapForShowsToPlay.pop()
+
+  while (
+    minHeapForPlayingShows.size() > 0 &&
+    show.startTime > minHeapForPlayingShows.peek().endTime
+  ) {
+    const finishShow = minHeapForPlayingShows.pop()
+    currentBandwidth -= finishShow.bandwidth
+  }
+
+  currentBandwidth += show.bandwidth
+  maxBandwidth = Math.max(maxBandwidth, currentBandwidth)
+
+  if (showIdx + 1 < channels[channelIdx].length) {
+    const nextShowInTheChannel = channels[channelIdx][showIdx]
+    minHeapForShowsToPlay.push({
+      channelIdx: i,
+      showIdx: showIdx + 1,
+      show: nextShowInTheChannel,
+      bandwidth: getBandwidthOfShow(nextShowInTheChannel),
+    })
+  }
+}
+
+return maxBandwidth
+```
