@@ -391,3 +391,44 @@ var findMaxForm = function (strs, m, n) {
   return dp[m][n]
 }
 ```
+
+## Last Stone Weight II
+
+https://leetcode.com/problems/last-stone-weight-ii/
+
+### Approach 1: Bottom-Up Dynamic Programming with 1D array
+
+Time complexity: `O(n * s)`, where n = stones.length, s = sum of stones
+Space complexity: `O(s)`, where s = sum of stones
+
+```js
+/**
+ * @param {number[]} stones
+ * @return {number}
+ */
+var lastStoneWeightII = function (stones) {
+  const totalStoneWeight = stones.reduce((acc, curr) => acc + curr, 0)
+
+  let dp = Array(Math.floor(totalStoneWeight / 2) + 1).fill(false)
+
+  dp[0] = true
+
+  stones.forEach((stone) => {
+    const nextDp = []
+    for (let i = 0; i < dp.length; i++) {
+      if (stone > i) {
+        nextDp[i] = dp[i]
+      } else {
+        nextDp[i] = dp[i] || dp[i - stone]
+      }
+    }
+    dp = nextDp
+  })
+
+  for (let i = dp.length - 1; i >= 0; i--) {
+    if (dp[i]) {
+      return totalStoneWeight - i * 2
+    }
+  }
+}
+```
