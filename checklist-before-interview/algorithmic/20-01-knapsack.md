@@ -137,7 +137,7 @@ var canPartition = function (nums) {
   const n = nums.length
   const target = sum / 2
 
-  // dp[j] stands for "can we get sum j from nums[0:i]?"
+  // dp[j] stands for "can we get sum j from nums[0:i]?", currently i is 0
   let dp = Array(target + 1).fill(false)
 
   // base case, if subSetSum = 0, we can achieve it by choose nothing
@@ -157,5 +157,237 @@ var canPartition = function (nums) {
   }
 
   return dp[target]
+}
+```
+
+## Ones and Zeroes
+
+https://leetcode.com/problems/ones-and-zeroes/
+
+### Approach 1: Top-Down Dynamic Programming
+
+Time complexity: `O(2^n * l)`, where n = strs.length, l = average length of strs
+Space complexity: O(n), where n = strs.length, for the stack call
+
+```js
+// O(n), where n = str.length
+const getZerosAndOnes = (str) => {
+  let zeros = 0
+  let ones = 0
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '0') {
+      zeros += 1
+    } else {
+      ones += 1
+    }
+  }
+  return { zeros, ones }
+}
+
+/**
+ * @param {string[]} strs
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var findMaxForm = function (strs, m, n) {
+  const cache = {}
+
+  const dfs = (strIdx = 0, allowZeros = m, allowOnes = n) => {
+    if (strIdx === strs.length) {
+      return 0
+    }
+
+    const cacheKey = `${strIdx},${allowZeros},${allowOnes}`
+    if (cache[cacheKey]) {
+      return cache[cacheKey]
+    }
+
+    const { zeros, ones } = getZerosAndOnes(strs[strIdx])
+
+    let res
+    if (zeros > allowZeros || ones > allowOnes) {
+      res = dfs(strIdx + 1, allowZeros, allowOnes)
+    } else {
+      res = Math.max(
+        dfs(strIdx + 1, allowZeros, allowOnes),
+        1 + dfs(strIdx + 1, allowZeros - zeros, allowOnes - ones)
+      )
+    }
+
+    cache[cacheKey] = res
+    return cache[cacheKey]
+  }
+
+  return dfs()
+}
+```
+
+### Approach 2: Bottom-Up Dynamic Programming with 3D array
+
+Time complexity: `O(l * m * n)`, where l = strs.length
+Space complexity: `O(l * m * n)`, where l = strs.length
+
+```js
+// O(n), where n = str.length
+const getZerosAndOnes = (str) => {
+  let zeros = 0
+  let ones = 0
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '0') {
+      zeros += 1
+    } else {
+      ones += 1
+    }
+  }
+  return { zeros, ones }
+}
+
+/**
+ * @param {string[]} strs
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var findMaxForm = function (strs, m, n) {
+  // dp[i][j][k] means "how many strings can we have from range strs[0:i] with max zeros j and max ones k"
+  const dp = Array(strs.length + 1)
+    .fill()
+    .map(() =>
+      Array(m + 1)
+        .fill()
+        .map(() => Array(n + 1).fill(0))
+    )
+
+  for (let strIdx = 1; strIdx <= strs.length; strIdx++) {
+    const { zeros, ones } = getZerosAndOnes(strs[strIdx - 1])
+    for (let allowedZeros = 0; allowedZeros <= m; allowedZeros++) {
+      for (let allowedOnes = 0; allowedOnes <= n; allowedOnes++) {
+        const isCurrentStringAllowed =
+          allowedZeros >= zeros && allowedOnes >= ones
+
+        if (isCurrentStringAllowed) {
+          dp[strIdx][allowedZeros][allowedOnes] = Math.max(
+            1 + dp[strIdx - 1][allowedZeros - zeros][allowedOnes - ones],
+            dp[strIdx - 1][allowedZeros][allowedOnes]
+          )
+        } else {
+          dp[strIdx][allowedZeros][allowedOnes] =
+            dp[strIdx - 1][allowedZeros][allowedOnes]
+        }
+      }
+    }
+  }
+
+  return dp[strs.length][m][n]
+}
+```
+
+### Approach 2: Bottom-Up Dynamic Programming with two 2D arrays
+
+Time complexity: `O(l * m * n)`, where l = strs.length
+Space complexity: `O(m * n)`
+
+```js
+// O(n), where n = str.length
+const getZerosAndOnes = (str) => {
+  let zeros = 0
+  let ones = 0
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '0') {
+      zeros += 1
+    } else {
+      ones += 1
+    }
+  }
+  return { zeros, ones }
+}
+
+/**
+ * @param {string[]} strs
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var findMaxForm = function (strs, m, n) {
+  let dp = Array(m + 1)
+    .fill()
+    .map(() => Array(n + 1).fill(0))
+
+  for (let strIdx = 1; strIdx <= strs.length; strIdx++) {
+    const nextDp = Array(m + 1)
+      .fill()
+      .map(() => Array(n + 1).fill(0))
+
+    const { zeros, ones } = getZerosAndOnes(strs[strIdx - 1])
+
+    for (let allowedZeros = 0; allowedZeros <= m; allowedZeros++) {
+      for (let allowedOnes = 0; allowedOnes <= n; allowedOnes++) {
+        const isCurrentStringAllowed =
+          allowedZeros >= zeros && allowedOnes >= ones
+
+        if (isCurrentStringAllowed) {
+          nextDp[allowedZeros][allowedOnes] = Math.max(
+            1 + dp[allowedZeros - zeros][allowedOnes - ones],
+            dp[allowedZeros][allowedOnes]
+          )
+        } else {
+          nextDp[allowedZeros][allowedOnes] = dp[allowedZeros][allowedOnes]
+        }
+      }
+    }
+
+    dp = nextDp
+  }
+
+  return dp[m][n]
+}
+```
+
+### Approach 4: Bottom-Up Dynamic Programming with only one 2D array
+
+Time complexity: `O(l * m * n)`, where l = strs.length
+Space complexity: `O(m * n)`
+
+```js
+// O(n), where n = str.length
+const getZerosAndOnes = (str) => {
+  let zeros = 0
+  let ones = 0
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '0') {
+      zeros += 1
+    } else {
+      ones += 1
+    }
+  }
+  return { zeros, ones }
+}
+
+/**
+ * @param {string[]} strs
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var findMaxForm = function (strs, m, n) {
+  const dp = Array(m + 1)
+    .fill()
+    .map(() => Array(n + 1).fill(0))
+
+  for (let strIdx = 1; strIdx <= strs.length; strIdx++) {
+    const { zeros, ones } = getZerosAndOnes(strs[strIdx - 1])
+
+    for (let allowedZeros = m; allowedZeros >= zeros; allowedZeros--) {
+      for (let allowedOnes = n; allowedOnes >= ones; allowedOnes--) {
+        dp[allowedZeros][allowedOnes] = Math.max(
+          1 + dp[allowedZeros - zeros][allowedOnes - ones],
+          dp[allowedZeros][allowedOnes]
+        )
+      }
+    }
+  }
+
+  return dp[m][n]
 }
 ```
