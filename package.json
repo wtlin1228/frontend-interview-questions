@@ -1,0 +1,23 @@
+{
+  "name": "frontend-interview-questions",
+  "version": "1.0.0",
+  "description": "Collect frontend interview questions from blogs, articles, videos and books...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wtlin1228/frontend-interview-questions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wtlin1228/frontend-interview-questions/issues"
+  },
+  "homepage": "https://github.com/wtlin1228/frontend-interview-questions#readme",
+  "devDependencies": {
+    "jest": "^29.0.3"
+  }
+}
